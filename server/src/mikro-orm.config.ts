@@ -8,10 +8,11 @@ export default {
         path: path.join(__dirname, './migrations'),
         pattern: /^[\w-]+\d+\.[tj]s$/
     },
+    host: 'superdb.cgdr0ufhffxk.us-east-2.rds.amazonaws.com',
     entities: [Post],
     dbName: 'lireddit',
     user: 'postgres',
-    password: '*PuntoNet2020',
+    password: 'ContrasenaNadaSegura',
     type: 'postgresql',
     debug: !__prod__
 } as Parameters<typeof MikroORM.init>[0];
