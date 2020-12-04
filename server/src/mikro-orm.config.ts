@@ -1,7 +1,8 @@
 import path from 'path';
 import { MikroORM } from '@mikro-orm/core';
-import { Post } from './entities/Post';
 import { __prod__ } from './constants';
+import { Post } from './entities/Post';
+import { User } from './entities/User';
 
 export default {
     migrations: {
@@ -9,7 +10,7 @@ export default {
         pattern: /^[\w-]+\d+\.[tj]s$/
     },
     host: 'dev-db.cgdr0ufhffxk.us-east-2.rds.amazonaws.com',
-    entities: [Post],
+    entities: [Post, User],
     dbName: 'lireddit',
     user: 'postgres',
     password: '*PuntoNet2020',
