@@ -6,6 +6,7 @@ import {MyContext} from "../types";
 export class PostResolver {
     /**
      * Finds all the posts
+     * @returns {Post[]} an array of posts
      */
     @Query(() => [Post])
     posts(
@@ -15,7 +16,7 @@ export class PostResolver {
     }
 
     /**
-     * Finds one posts
+     * Finds one post
      * @param {number} id
      * @param {em} em
      * @returns {Post|null}
@@ -49,6 +50,7 @@ export class PostResolver {
      * @param {number} id
      * @param {string} title
      * @param {em} em
+     * @returns {Post}
      */
     @Mutation(() => Post, {nullable: true})
     async updatePost(
@@ -60,7 +62,10 @@ export class PostResolver {
         if (!post)
             return null;
 
-        post.title = title;
+        if (title !== 'undefined') {
+            post.title = title;
+            await em.persistAndFlush(post);
+        }
         return post;
 
     }
@@ -69,6 +74,7 @@ export class PostResolver {
      * Deletes a post if exists
      * @param {number} id
      * @param {em} em
+     * @returns {boolean}
      */
     @Mutation(() => Boolean)
     async deletePost(
