@@ -33,11 +33,33 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
+    /**
+     * Checks if the user is logged in and returns null if not or user info if true
+     * @param em em context object
+     * @param req req context object
+     */
+    @Query(() => User, {nullable: true})
+    async me(
+        @Ctx() { em, req }: MyContext
+    ): Promise<User | null> {
+        // checks if the user is logged in
+        if (!req.session.userId)
+            return null;
+
+        return await em.findOne(User, { id: req.session.userId });
+    }
+
+    /**
+     * Registers a new user
+     * @param options Provided data to the register
+     * @param em em context object
+     */
     @Mutation(() => UserResponse)
     async register(
         @Arg('options') options: UsernamePasswordInput,
-        @Ctx() { em }: MyContext
+        @Ctx() { em, req }: MyContext
     ): Promise<UserResponse> {
+        // Check username length
         if (options.username.length <= 2)
             return {
                 errors: [
@@ -48,6 +70,7 @@ export class UserResolver {
                 ]
             };
         
+        // Check password length
         if (options.password.length <= 8)
             return {
                 errors: [
@@ -70,6 +93,7 @@ export class UserResolver {
             await em.persistAndFlush(user);
         } catch (error) {
             switch (error.code) {
+                // Provided username is not unique
                 case '23505':
                     return {
                         errors: [
@@ -91,13 +115,24 @@ export class UserResolver {
             }
         }
 
+        // store user id session
+        // this will set a cookie on the user
+        // keeps them logged in
+        req.session.userId = user.id;
+
         return { user };
     }
 
+    /**
+     * Logs in an user
+     * @param options Provided data to the register
+     * @param em em context object
+     * @param req req context object
+     */
     @Query(() => UserResponse)
     async login(
         @Arg('options') options: UsernamePasswordInput,
-        @Ctx() { em }: MyContext
+        @Ctx() { em, req }: MyContext
     ): Promise<UserResponse> {
         // Verifying user exist
         const user = await em.findOne(User, { username: options.username });
@@ -132,6 +167,11 @@ export class UserResolver {
                     }
                 ]
             };
+
+        // store user id session
+        // this will set a cookie on the user
+        // keeps them logged in
+        req.session.userId = user.id;
 
         return { user };
     }
