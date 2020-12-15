@@ -9,7 +9,7 @@ export default {
         path: path.join(__dirname, './migrations'),
         pattern: /^[\w-]+\d+\.[tj]s$/
     },
-    host: 'dev-db.cgdr0ufhffxk.us-east-2.rds.amazonaws.com',
+    // host: 'dev-db.cgdr0ufhffxk.us-east-2.rds.amazonaws.com',
     entities: [Post, User],
     dbName: 'lireddit',
     user: 'postgres',
