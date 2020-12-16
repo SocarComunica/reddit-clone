@@ -134,7 +134,7 @@ export class UserResolver {
    * @param em em context object
    * @param req req context object
    */
-  @Query(() => UserResponse)
+  @Mutation(() => UserResponse)
   async login(
     @Arg("options") options: UsernamePasswordInput,
     @Ctx() { em, req }: MyContext
